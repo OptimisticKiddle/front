@@ -24,7 +24,23 @@
 </template>
 
 <script lang="js" setup>
+import { onMounted } from 'vue';
+import { test } from '@/api/user';
 
+const getData = async (data)=>{
+	const res = await test(data);
+	console.log('123123',res);
+
+}
+onMounted(()=>{
+	const data = {
+		page:1,
+		pageSize:10,
+		name:'',
+	}
+	getData(data);
+
+});
 
 </script>
 

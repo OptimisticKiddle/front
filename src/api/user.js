@@ -4,10 +4,10 @@ import request from "@/utils/request.js";
 
  
 
-export function test(data) {
+export function test(params) {
     return request({
-        url: "/test",
-        method: "POST",
-        data
+        url: "/employee/page",
+        method: "get",
+        params
     })
 }
