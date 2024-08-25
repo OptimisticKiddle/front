@@ -158,6 +158,11 @@
           />
         </div>
 
+        <MyDialog
+          :title="'新增用户'"
+          :isVisible="isVisible"
+        ></MyDialog>
+
       </el-main>
     </el-container>
   </el-container>
@@ -166,14 +171,16 @@
 
 <script lang="js" setup>
 import { onMounted,reactive,ref } from 'vue';
+import MyDialog from '../MyDialog.vue';
 const formInline = reactive({
   username: '',
-  sex: '0',
-  status: '1',
+  sex: '',
+  status: '',
 })
 const multipleSelection = ref([])
 const pageNum = ref(1);
 const pageSize = ref(10);
+const isVisible = ref(false);
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
