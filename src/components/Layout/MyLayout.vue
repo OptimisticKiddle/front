@@ -84,6 +84,7 @@
                 type="primary"
                 color="red"
                 @click="handleDelete(ids)"
+                :disabled="ids.length == 0"
               >批量删除</el-button>
             </el-form-item>
           </el-form>
@@ -146,7 +147,11 @@
                 link
                 type="primary"
                 size="small"
-                @click="handleClick"
+                @click="()=>{
+									userDetail = {...scope.row}
+									isVisible = true
+									isAdd = false
+								}"
               >
                 编辑
               </el-button>
@@ -178,6 +183,7 @@
           :setVisible="setVisible"
           :getUserList="getUserList"
           :isAdd="isAdd"
+          :userDetail="userDetail"
         ></MyDialog>
 
       </el-main>
@@ -202,6 +208,7 @@ const pageSize = ref(10);
 const total = ref(0);
 const isVisible = ref(false);
 const isAdd = ref(false);
+const userDetail = ref({});
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 	console.log("select:",multipleSelection.value)

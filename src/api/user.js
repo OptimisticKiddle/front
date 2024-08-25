@@ -27,6 +27,14 @@ export const deleteUsers = (ids)=>{
 })
 }
 
+export const updateUser = (user)=>{
+	return request({
+		url: `/employee`,
+		method: "PUT",
+		data:user,
+	})
+}
+
 
 
 

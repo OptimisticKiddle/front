@@ -89,7 +89,7 @@
 
 <script setup>
 
-import { addUser } from '@/api/user';
+import { addUser, updateUser } from '@/api/user';
 import { defineProps, ref, onMounted, reactive, watch } from 'vue';
 import { ElMessage } from 'element-plus'
 
@@ -111,12 +111,22 @@ const props = defineProps({
   isAdd: {
     require: true
   }
+  , userDetail: {
+    type: Object,
+    default: () => ({
+      username: '',
+      age: '',
+      sex: '',
+      phone: '',
+      status: ''
+    })
+  }
 })
 
 const formLabelWidth = '140px'
 const visible = ref(false);
 const ruleFormRef = ref();
-const form = reactive({
+const form = ref({
   username: '',
   age: '',
   sex: '',
@@ -148,16 +158,18 @@ const rules = reactive({
   ],
 })
 
-
-
 watch(() => {
   visible.value = props.isVisible;
-  if (props.isAdd) form.value = {
-    username: '',
-    age: '',
-    sex: '',
-    phone: '',
-    status: ''
+  if (props.isAdd) {
+    form.value = {
+      username: '',
+      age: '',
+      sex: '',
+      phone: '',
+      status: ''
+    }
+  } else {
+    form.value = props.userDetail
   }
 
 }, [props.isVisible, props.isAdd])
@@ -167,7 +179,7 @@ onMounted(() => {
 })
 
 const handleAdd = async () => {
-  const res = await addUser(form);
+  const res = await addUser(form.value);
   console.log('add:', res);
   if (res.code == 200) {
     props.setVisible(false);
@@ -195,14 +207,41 @@ const handleAdd = async () => {
 
 }
 
+const handleEdit = async () => {
+  const res = await updateUser(form.value);
+  console.log('add:', res);
+  if (res.code == 200) {
+    props.setVisible(false);
+    props.getUserList();
+    form.value = {
+      username: '',
+      age: '',
+      sex: '',
+      phone: '',
+      status: ''
+    }
+    ElMessage({
+      message: '修改成功',
+      type: 'success',
+      plain: true,
+    })
+  } else {
+    ElMessage({
+      message: '修改失败',
+      type: 'error',
+      plain: true,
+    })
+
+  }
+
+}
+
 const handleSubmit = async () => {
   await ruleFormRef.value.validate(async (valid) => {
     if (valid) {
-      handleAdd()
+      props.isAdd ? handleAdd() : handleEdit();
     }
-
   })
-
 }
 
 
