@@ -4,10 +4,10 @@ import request from "@/utils/request.js";
 
  
 
-export function test(params) {
+export function getUser(pageNum,pageSize,params) {
     return request({
-        url: "/employee/page",
-        method: "get",
-        params
+        url: `/employee/page?page=${pageNum}&pageSize=${pageSize}`,
+        method: "POST",
+        data:params,
     })
 }

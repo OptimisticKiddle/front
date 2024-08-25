@@ -9,6 +9,7 @@ module.exports = defineConfig({
  
  
   transpileDependencies: true,
+	
  
   devServer: {
     hot: true, //热加载
@@ -25,7 +26,13 @@ module.exports = defineConfig({
           '^/api': '/'
         }
       },
-    }
+    },
+		client: {
+
+			overlay: false
+	
+	},
+		
   },
  
   

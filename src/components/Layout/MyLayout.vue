@@ -69,7 +69,7 @@
             <el-form-item>
               <el-button
                 type="primary"
-                @click="onSubmit"
+                @click="handleQuery"
               >查询</el-button>
               <el-button
                 type="primary"
@@ -78,12 +78,12 @@
               <el-button
                 type="primary"
                 color="green"
-                @click="handleReset"
+                @click="handleAdd"
               >新增</el-button>
               <el-button
                 type="primary"
                 color="red"
-                @click="handleReset"
+                @click="handleDelete"
               >批量删除</el-button>
             </el-form-item>
           </el-form>
@@ -92,7 +92,7 @@
           ref="multipleTableRef"
           :data="tableData"
           @selection-change="handleSelectionChange"
-          style="width:90%;margin:auto"
+          style="width:95%;margin:auto"
         >
           <el-table-column type="selection" />
 
@@ -101,28 +101,41 @@
             property="id"
           />
           <el-table-column
-            property="name"
+            property="username"
             label="姓名"
           />
           <el-table-column
             property="sex"
             label="性别"
+          >
+            <template #default="scope">
+              <div>{{ scope.row.sex == "1" ? '男' : '女' }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            property="age"
+            label="年龄"
           />
           <el-table-column
-            property="年龄"
-            label="age"
+            property="phone"
+            label="手机号"
+          />
+
+          <el-table-column
+            property="status"
+            label="状态"
+          >
+            <template #default="scope">
+              <div>{{ scope.row.status == "1" ? '启用' : '禁用' }}</div>
+            </template>
+          </el-table-column>
+
+          label="创建日期"
+          property="createTime"
           />
           <el-table-column
-            property="手机号"
-            label="phone"
-          />
-          <el-table-column
-            property="创建日期"
-            label="createTime"
-          />
-          <el-table-column
-            property="修改日期"
-            label="updateTime"
+            label="修改日期"
+            property="updateTime"
           />
           <el-table-column
             fixed="right"
@@ -152,15 +165,16 @@
             :page-sizes="[10, 50, 100, 150]"
             :size="size"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="150"
+            :total="total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           />
         </div>
 
         <MyDialog
-          :title="'新增用户'"
+          :title="isAdd ? '新增用户' : '编辑用户'"
           :isVisible="isVisible"
+          :setVisible="setVisible"
         ></MyDialog>
 
       </el-main>
@@ -172,6 +186,7 @@
 <script lang="js" setup>
 import { onMounted,reactive,ref } from 'vue';
 import MyDialog from '../MyDialog.vue';
+import { getUser } from '@/api/user';
 const formInline = reactive({
   username: '',
   sex: '',
@@ -180,52 +195,37 @@ const formInline = reactive({
 const multipleSelection = ref([])
 const pageNum = ref(1);
 const pageSize = ref(10);
+const total = ref(0);
 const isVisible = ref(false);
+const isAdd = ref(false);
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
-const tableData = [
-  {
-		id:1,
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-08',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-06',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-07',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-]
+const tableData = ref([]);
+
+const handleQuery = ()=>{
+	pageNum.value = 1;
+	getUserList();
+}
+
+const handleAdd = ()=>{
+	isAdd.value = true;
+	isVisible.value = true;
+}
+
+const setVisible = ()=>{
+	isVisible.value = false;
+}
+
+const getUserList = async ()=>{
+	const res = await getUser(pageNum.value,pageSize.value,formInline);
+	console.log('res:',res);
+	tableData.value = res.data.records || [];
+	total.value = res.data.total || 0; 
+}
 
 onMounted(()=>{
-
-
+	getUserList();
 });
 
 </script>
