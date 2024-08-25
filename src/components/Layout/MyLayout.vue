@@ -162,7 +162,7 @@
           <el-pagination
             v-model:current-page="pageNum"
             v-model:page-size="pageSize"
-            :page-sizes="[10, 50, 100, 150]"
+            :page-sizes="[5,10, 50, 100, 150]"
             :size="size"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
@@ -175,6 +175,8 @@
           :title="isAdd ? '新增用户' : '编辑用户'"
           :isVisible="isVisible"
           :setVisible="setVisible"
+          :getUserList="getUserList"
+          :isAdd="isAdd"
         ></MyDialog>
 
       </el-main>
@@ -201,11 +203,28 @@ const isAdd = ref(false);
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
+const handleSizeChange = (val) => {
+	pageSize.value = val;
+	pageNum.value = 1;
+	getUserList();
+}
+const handleCurrentChange = (val) => {
+  pageNum.value = val;
+  getUserList();
+}
 const tableData = ref([]);
 
 const handleQuery = ()=>{
 	pageNum.value = 1;
 	getUserList();
+}
+
+const handleReset = ()=>{
+	formInline.username = '';
+  formInline.sex = '';
+  formInline.status = '';
+  pageNum.value = 1;
+  getUserList();
 }
 
 const handleAdd = ()=>{
