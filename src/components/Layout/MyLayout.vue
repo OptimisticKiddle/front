@@ -4,7 +4,10 @@
       width="200px"
       class="side"
     >
-      <el-menu class="menu">
+      <el-menu
+        class="menu"
+        default-active="1"
+      >
         <el-menu-item index="1">
           <el-icon><icon-menu /></el-icon>
           <span>用户列表</span>
@@ -176,7 +179,6 @@
             @current-change="handleCurrentChange"
           />
         </div>
-
         <MyDialog
           :title="isAdd ? '新增用户' : '编辑用户'"
           :isVisible="isVisible"

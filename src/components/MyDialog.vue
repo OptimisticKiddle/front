@@ -11,6 +11,7 @@
       ref="ruleFormRef"
       :model="form"
       :rules="rules"
+      style="width:400px"
     >
       <el-form-item
         label="姓名"
@@ -37,7 +38,10 @@
         :label-width="formLabelWidth"
         required
       >
-        <el-select v-model="form.sex">
+        <el-select
+          v-model="form.sex"
+          placeholder="请选择性别"
+        >
           <el-option
             label="女"
             value="0"
@@ -62,7 +66,11 @@
         :label-width="formLabelWidth"
         required
       >
-        <el-select v-model="form.status">
+
+        <el-select
+          v-model="form.status"
+          placeholder="请选择状态"
+        >
           <el-option
             label="启用"
             value="1"
