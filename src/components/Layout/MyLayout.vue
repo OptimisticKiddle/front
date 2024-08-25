@@ -83,7 +83,7 @@
               <el-button
                 type="primary"
                 color="red"
-                @click="handleDelete"
+                @click="handleDelete(ids)"
               >批量删除</el-button>
             </el-form-item>
           </el-form>
@@ -141,7 +141,7 @@
             fixed="right"
             label="操作"
           >
-            <template #default>
+            <template #default="scope">
               <el-button
                 link
                 type="primary"
@@ -154,6 +154,7 @@
                 link
                 type="primary"
                 size="small"
+                @click="handleDelete([scope.row.id])"
               >删除</el-button>
             </template>
           </el-table-column>
@@ -186,9 +187,10 @@
 </template>
 
 <script lang="js" setup>
-import { onMounted,reactive,ref } from 'vue';
+import { onMounted,reactive,ref,computed } from 'vue';
 import MyDialog from '../MyDialog.vue';
-import { getUser } from '@/api/user';
+import { deleteUsers, getUser } from '@/api/user';
+import { ElMessageBox,ElMessage } from 'element-plus'
 const formInline = reactive({
   username: '',
   sex: '',
@@ -202,6 +204,7 @@ const isVisible = ref(false);
 const isAdd = ref(false);
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
+	console.log("select:",multipleSelection.value)
 }
 const handleSizeChange = (val) => {
 	pageSize.value = val;
@@ -230,6 +233,37 @@ const handleReset = ()=>{
 const handleAdd = ()=>{
 	isAdd.value = true;
 	isVisible.value = true;
+}
+
+const ids = computed(()=>{
+	return multipleSelection.value.map(item=>item.id).join(',');
+})
+
+const handleDelete = async (ids)=>{
+	console.log("ids:",ids)
+		ElMessageBox.confirm(
+		'确认删除？',
+		'提示',
+		{
+			confirmButtonText: '确定',
+			cancelButtonText: '取消',
+			type: 'warning',
+		}
+	).then(async () => {
+		const res = await deleteUsers(ids);
+		if(res.code == 200) {
+			ElMessage({
+				message: '删除成功',
+				type: 'success',
+				plain: true,
+    })
+		pageNum.value = 1;
+		getUserList();
+		}
+	}).catch(() => {
+		console.log('取消')
+	})
+
 }
 
 const setVisible = ()=>{

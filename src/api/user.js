@@ -20,6 +20,13 @@ export const addUser = (user) => {
 	})
 }
 
+export const deleteUsers = (ids)=>{
+	return request({
+		url: `/employee?ids=${ids}`,
+		method: "delete",
+})
+}
+
 
 
 
